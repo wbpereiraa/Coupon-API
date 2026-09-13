@@ -1,7 +1,7 @@
 package com.challenge.coupon.controller;
 
 import com.challenge.coupon.config.SecurityConfig;
-import com.challenge.coupon.domain.model.CouponStatus;
+import com.challenge.coupon.model.CouponStatus;
 import com.challenge.coupon.dto.request.CreateCouponRequest;
 import com.challenge.coupon.dto.response.CouponResponse;
 import com.challenge.coupon.exception.CouponAlreadyDeletedException;
