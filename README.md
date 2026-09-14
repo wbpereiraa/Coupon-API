@@ -69,6 +69,9 @@ O projeto foi construído para entregar **alto rigor técnico (padrão Pleno/Sê
 
 A aplicação iniciará na porta **8080**.
 
+Os timestamps são persistidos como instantes UTC. A API os exibe no fuso
+`America/Sao_Paulo`, e o H2 Console usa o mesmo fuso apenas para apresentação.
+
 ---
 
 ### 2. Executando com Docker Compose
