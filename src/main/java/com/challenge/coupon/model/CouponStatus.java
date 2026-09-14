@@ -1,7 +1,8 @@
-package com.challenge.coupon.domain.model;
+package com.challenge.coupon.model;
 
 public enum CouponStatus {
     ACTIVE,
     INACTIVE,
     DELETED
 }
+

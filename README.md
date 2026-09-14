@@ -1,22 +1,20 @@
-﻿# Coupon API - Desafio Técnico Spring Boot
+# Coupon API - Desafio Técnico Spring Boot
 
-API REST para gerenciamento e ciclo de vida de cupons promocionais desenvolvida em **Java 21 / Spring Boot 3.4**, seguindo os princípios de **Clean Architecture**, **Domain-Driven Design (DDD)** e separação estrita entre modelo de domínio puro e entidades de persistência JPA.
+API REST para gerenciamento e ciclo de vida de cupons promocionais desenvolvida em **Java 21 / Spring Boot 3.4**, seguindo os princípios de **Arquitetura em Camadas Pragmática** e **Entidade de Domínio Rica (Rich Domain Entity)**, balanceando clareza, alta manutenibilidade e ausência de complexidade acidental (*anti-over-engineering*).
 
 ---
 
 ## 🎯 Objetivo & Destaques da Arquitetura
 
-O projeto foi projetado do zero para atingir padrão técnico **Senior/Pleno** com as seguintes diretrizes:
+O projeto foi construído para entregar **alto rigor técnico (padrão Pleno/Sênior)** com simplicidade e foco no negócio:
 
-1. **Separação Estrita de Camadas**:
-   - `domain/model`: Entidades ricas de domínio puro (sem anotações JPA/framework).
-   - `domain/policy`: Classes especializadas de regras de negócio isoladas (validação de código, desconto e expiração).
-   - `entity`: Entidades JPA responsáveis exclusivamente pelo mapeamento relacional.
-   - `repository`: Spring Data JPA desacoplado das regras de negócio.
-   - `service`: Orquestração de casos de uso sem vazamento de detalhes de persistência.
-   - `controller`: Exposição REST documentada com OpenAPI v3.
+1. **Arquitetura em Camadas Pragmática**:
+   - `model`: Entidade rica (`Coupon`) contendo anotações JPA e encapsulamento de regras de ciclo de vida (`delete()`, higienização de código, validação de desconto e expiração), evitando modelo anêmico.
+   - `repository`: Spring Data JPA (`CouponRepository`) desacoplado de detalhes de infraestrutura.
+   - `service`: Camada de aplicação e casos de uso (`CouponService`) orquestrando transações de forma limpa e direta.
+   - `controller`: Exposição REST padronizada e documentada com OpenAPI v3 (`CouponController`).
    - `dto/request` e `dto/response`: DTOs dedicados com validação declarativa (`Jakarta Validation`).
-   - `mapper`: Conversões explícitas entre DTO, Domínio e Entidade JPA.
+   - `mapper`: Componente coeso (`CouponMapper`) para conversão explícita entre DTOs e entidade.
    - `exception`: Hierarquia de exceções de negócio e `GlobalExceptionHandler` padronizado.
    - `config`: Configurações centralizadas de Segurança (HTTP Basic) e Swagger.
 
@@ -30,7 +28,8 @@ O projeto foi projetado do zero para atingir padrão técnico **Senior/Pleno** c
    - Acesso público liberado ao **Swagger UI** e documentação da API (`/v3/api-docs/**`, `/swagger-ui/**`).
 
 4. **Qualidade & Testes**:
-   - Testes unitários de domínio e políticas cobrindo >95% das regras de negócio.
+   - Testes unitários da entidade rica cobrindo 100% das regras e casos de borda.
+   - Testes unitários da camada de serviço com Mockito.
    - Testes de integração da camada web (`@WebMvcTest`) cobrindo cenários com sucesso, validação e autenticação.
    - Cobertura validada via **JaCoCo** (`mvn verify`).
 
@@ -44,10 +43,10 @@ O projeto foi projetado do zero para atingir padrão técnico **Senior/Pleno** c
 
 | Regra | Descrição | Comportamento na Aplicação |
 |---|---|---|
-| **Obrigatoriedade** | `code`, `description`, `discountValue`, `expirationDate` são obrigatórios. | Validados na borda (DTO) e na fábrica do Domínio. |
-| **Formato do Código** | Alfanumérico com exatamente 6 caracteres. | Caracteres especiais e espaços são aceitos na entrada (`ABC-123`), higienizados pela `CouponCodePolicy`, resultando em exatamente 6 caracteres (`ABC123`). Entradas que resultem em tamanho diferente são rejeitadas com erro 400. |
-| **Valor do Desconto** | Mínimo de 0,5 sem limite máximo. Saldo absoluto. | Validado pela `CouponDiscountPolicy` (rejeita valores < 0.5). |
-| **Data de Expiração** | Não pode ser criada com data no passado. | Validada pela `CouponExpirationPolicy` comparando com o instante da requisição. |
+| **Obrigatoriedade** | `code`, `description`, `discountValue`, `expirationDate` são obrigatórios. | Validados na borda (DTO) e na entidade de domínio. |
+| **Formato do Código** | Alfanumérico com exatamente 6 caracteres. | Caracteres especiais e espaços são aceitos na entrada (`ABC-123`), higienizados pela entidade `Coupon`, resultando em exatamente 6 caracteres (`ABC123`). Entradas que resultem em tamanho diferente são rejeitadas com erro 400. |
+| **Valor do Desconto** | Mínimo de 0,5 sem limite máximo. Saldo absoluto. | Validado pela entidade `Coupon` (rejeita valores < 0.5). |
+| **Data de Expiração** | Não pode ser criada com data no passado. | Validada pela entidade `Coupon` comparando com o instante da requisição. |
 | **Publicação** | Pode ser criado como publicado ou não. | Campo `published` booleano (default: `false`). |
 | **Soft Delete** | Deleção lógica do cupom sem perda de histórico. | `DELETE /coupon/{id}` atualiza `status` para `DELETED`, preenche `deleted_at` e persiste. |
 | **Proteção de Deleção** | Proibido deletar cupom já deletado. | O método de domínio `delete()` detecta status `DELETED` e lança `CouponAlreadyDeletedException` (HTTP 400). |

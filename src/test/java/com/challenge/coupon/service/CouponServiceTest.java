@@ -1,14 +1,13 @@
 package com.challenge.coupon.service;
 
-import com.challenge.coupon.domain.model.CouponStatus;
 import com.challenge.coupon.dto.request.CreateCouponRequest;
 import com.challenge.coupon.dto.response.CouponResponse;
-import com.challenge.coupon.entity.CouponEntity;
 import com.challenge.coupon.exception.CouponAlreadyDeletedException;
 import com.challenge.coupon.exception.ResourceNotFoundException;
 import com.challenge.coupon.mapper.CouponMapper;
+import com.challenge.coupon.model.Coupon;
+import com.challenge.coupon.model.CouponStatus;
 import com.challenge.coupon.repository.CouponRepository;
-import com.challenge.coupon.service.impl.CouponServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,13 +28,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CouponServiceImplTest {
+class CouponServiceTest {
 
     @Mock
     private CouponRepository couponRepository;
 
     private CouponMapper couponMapper;
-    private CouponServiceImpl couponService;
+    private CouponService couponService;
 
     private final Instant futureDate = Instant.now().plus(10, ChronoUnit.DAYS);
 
@@ -56,7 +55,7 @@ class CouponServiceImplTest {
                 .published(true)
                 .build();
 
-        when(couponRepository.save(any(CouponEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(couponRepository.save(any(Coupon.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         CouponResponse response = couponService.create(request);
 
@@ -69,9 +68,9 @@ class CouponServiceImplTest {
         assertThat(response.isPublished()).isTrue();
         assertThat(response.isRedeemed()).isFalse();
 
-        ArgumentCaptor<CouponEntity> captor = ArgumentCaptor.forClass(CouponEntity.class);
+        ArgumentCaptor<Coupon> captor = ArgumentCaptor.forClass(Coupon.class);
         verify(couponRepository).save(captor.capture());
-        CouponEntity saved = captor.getValue();
+        Coupon saved = captor.getValue();
         assertThat(saved.getCode()).isEqualTo("ABC123");
     }
 
@@ -79,17 +78,14 @@ class CouponServiceImplTest {
     @DisplayName("Should return coupon response when found by ID")
     void shouldReturnCouponById() {
         UUID id = UUID.randomUUID();
-        CouponEntity entity = CouponEntity.builder()
-                .id(id)
-                .code("ABC123")
-                .description("Cupom Existente")
-                .discountValue(10.0)
-                .expirationDate(futureDate)
-                .status(CouponStatus.ACTIVE)
-                .published(false)
-                .redeemed(false)
-                .createdAt(Instant.now())
-                .build();
+        Coupon entity = Coupon.create(
+                "ABC-123",
+                "Cupom Existente",
+                10.0,
+                futureDate,
+                false
+        );
+        entity.setId(id);
 
         when(couponRepository.findById(id)).thenReturn(Optional.of(entity));
 
@@ -116,26 +112,23 @@ class CouponServiceImplTest {
     @DisplayName("Should soft delete active coupon and update status in repository")
     void shouldSoftDeleteActiveCoupon() {
         UUID id = UUID.randomUUID();
-        CouponEntity entity = CouponEntity.builder()
-                .id(id)
-                .code("ABC123")
-                .description("Cupom a Deletar")
-                .discountValue(10.0)
-                .expirationDate(futureDate)
-                .status(CouponStatus.ACTIVE)
-                .published(false)
-                .redeemed(false)
-                .createdAt(Instant.now())
-                .build();
+        Coupon entity = Coupon.create(
+                "ABC-123",
+                "Cupom a Deletar",
+                10.0,
+                futureDate,
+                false
+        );
+        entity.setId(id);
 
         when(couponRepository.findById(id)).thenReturn(Optional.of(entity));
-        when(couponRepository.save(any(CouponEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(couponRepository.save(any(Coupon.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         couponService.delete(id);
 
-        ArgumentCaptor<CouponEntity> captor = ArgumentCaptor.forClass(CouponEntity.class);
+        ArgumentCaptor<Coupon> captor = ArgumentCaptor.forClass(Coupon.class);
         verify(couponRepository).save(captor.capture());
-        CouponEntity updated = captor.getValue();
+        Coupon updated = captor.getValue();
 
         assertThat(updated.getStatus()).isEqualTo(CouponStatus.DELETED);
         assertThat(updated.getDeletedAt()).isNotNull();
@@ -145,18 +138,15 @@ class CouponServiceImplTest {
     @DisplayName("Should throw CouponAlreadyDeletedException when attempting to delete already deleted coupon")
     void shouldThrowExceptionWhenDeletingAlreadyDeleted() {
         UUID id = UUID.randomUUID();
-        CouponEntity entity = CouponEntity.builder()
-                .id(id)
-                .code("ABC123")
-                .description("Cupom Já Deletado")
-                .discountValue(10.0)
-                .expirationDate(futureDate)
-                .status(CouponStatus.DELETED)
-                .published(false)
-                .redeemed(false)
-                .createdAt(Instant.now())
-                .deletedAt(Instant.now())
-                .build();
+        Coupon entity = Coupon.create(
+                "ABC-123",
+                "Cupom Já Deletado",
+                10.0,
+                futureDate,
+                false
+        );
+        entity.setId(id);
+        entity.delete();
 
         when(couponRepository.findById(id)).thenReturn(Optional.of(entity));
 

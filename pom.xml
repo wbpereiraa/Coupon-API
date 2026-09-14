@@ -119,7 +119,8 @@
                                 <rule>
                                     <element>PACKAGE</element>
                                     <includes>
-                                        <include>com.challenge.coupon.domain*</include>
+                                        <include>com.challenge.coupon.model*</include>
+                                        <include>com.challenge.coupon.service*</include>
                                     </includes>
                                     <limits>
                                         <limit>

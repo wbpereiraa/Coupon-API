@@ -1,6 +1,6 @@
 package com.challenge.coupon.dto.response;
 
-import com.challenge.coupon.domain.model.CouponStatus;
+import com.challenge.coupon.model.CouponStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.Instant;
