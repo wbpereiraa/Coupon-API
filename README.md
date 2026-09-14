@@ -1,4 +1,4 @@
-# Coupon API - Desafio Técnico Spring Boot
+# Coupon API
 
 API REST para gerenciamento e ciclo de vida de cupons promocionais desenvolvida em **Java 21 / Spring Boot 3.4**, seguindo os princípios de **Arquitetura em Camadas Pragmática** e **Entidade de Domínio Rica (Rich Domain Entity)**, balanceando clareza, alta manutenibilidade e ausência de complexidade acidental (*anti-over-engineering*).
 
@@ -6,7 +6,7 @@ API REST para gerenciamento e ciclo de vida de cupons promocionais desenvolvida 
 
 ## 🎯 Objetivo & Destaques da Arquitetura
 
-O projeto foi construído para entregar **alto rigor técnico (padrão Pleno/Sênior)** com simplicidade e foco no negócio:
+O projeto construído para entregar **alto rigor técnico** com simplicidade e foco no negócio:
 
 1. **Arquitetura em Camadas Pragmática**:
    - `model`: Entidade rica (`Coupon`) contendo anotações JPA e encapsulamento de regras de ciclo de vida (`delete()`, higienização de código, validação de desconto e expiração), evitando modelo anêmico.
@@ -28,7 +28,7 @@ O projeto foi construído para entregar **alto rigor técnico (padrão Pleno/Sê
    - Acesso público liberado ao **Swagger UI** e documentação da API (`/v3/api-docs/**`, `/swagger-ui/**`).
 
 4. **Qualidade & Testes**:
-   - Testes unitários da entidade rica cobrindo 100% das regras e casos de borda.
+   - Testes unitários da entidade rica cobrindo mais de 90% das regras e casos de borda.
    - Testes unitários da camada de serviço com Mockito.
    - Testes de integração da camada web (`@WebMvcTest`) cobrindo cenários com sucesso, validação e autenticação.
    - Cobertura validada via **JaCoCo** (`mvn verify`).
@@ -68,6 +68,9 @@ O projeto foi construído para entregar **alto rigor técnico (padrão Pleno/Sê
 *(No Windows PowerShell: `.\mvnw.cmd spring-boot:run`)*
 
 A aplicação iniciará na porta **8080**.
+
+Os timestamps são persistidos como instantes UTC. A API os exibe no fuso
+`America/Sao_Paulo`, e o H2 Console usa o mesmo fuso apenas para apresentação.
 
 ---
 
