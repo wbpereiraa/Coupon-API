@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/coupon")
 @Tag(name = "coupon", description = "Endpoints de gerenciamento e ciclo de vida de cupons promocionais")
-@SecurityRequirement(name = "basicAuth")
 public class CouponController {
 
     private final CouponService couponService;
@@ -46,7 +44,6 @@ public class CouponController {
                     content = @Content(schema = @Schema(implementation = CouponResponse.class))),
             @ApiResponse(responseCode = "400", description = "Dados inválidos ou violação de regra de negócio",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "401", description = "Não autorizado")
     })
     public ResponseEntity<CouponResponse> create(@Valid @RequestBody CreateCouponRequest request) {
         CouponResponse response = couponService.create(request);
@@ -65,7 +62,7 @@ public class CouponController {
             @ApiResponse(responseCode = "401", description = "Não autorizado")
     })
     public ResponseEntity<CouponResponse> getById(
-            @Parameter(description = "Identificador único do cupom (UUID)", example = "cef9d1e3-aae5-4ab6-a297-358c6032b1e7")
+            @Parameter(description = "Identificador único do cupom (UUID)", example = "UUID para consulta")
             @PathVariable UUID id) {
         CouponResponse response = couponService.getById(id);
         return ResponseEntity.ok(response);
@@ -83,7 +80,7 @@ public class CouponController {
             @ApiResponse(responseCode = "401", description = "Não autorizado")
     })
     public ResponseEntity<Void> delete(
-            @Parameter(description = "Identificador único do cupom (UUID)", example = "cef9d1e3-aae5-4ab6-a297-358c6032b1e7")
+            @Parameter(description = "Identificador único do cupom (UUID)", example = "UUID para deletar")
             @PathVariable UUID id) {
         couponService.delete(id);
         return ResponseEntity.noContent().build();

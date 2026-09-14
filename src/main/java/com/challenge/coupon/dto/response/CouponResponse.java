@@ -2,11 +2,15 @@ package com.challenge.coupon.dto.response;
 
 import com.challenge.coupon.model.CouponStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Schema(description = "Representação detalhada do cupom promocional")
+@Getter
+@Setter
 public class CouponResponse {
 
     @Schema(description = "Identificador único (UUID)", example = "cef9d1e3-aae5-4ab6-a297-358c6032b1e7")
@@ -49,70 +53,6 @@ public class CouponResponse {
 
     public static Builder builder() {
         return new Builder();
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Double getDiscountValue() {
-        return discountValue;
-    }
-
-    public void setDiscountValue(Double discountValue) {
-        this.discountValue = discountValue;
-    }
-
-    public Instant getExpirationDate() {
-        return expirationDate;
-    }
-
-    public void setExpirationDate(Instant expirationDate) {
-        this.expirationDate = expirationDate;
-    }
-
-    public CouponStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(CouponStatus status) {
-        this.status = status;
-    }
-
-    public boolean isPublished() {
-        return published;
-    }
-
-    public void setPublished(boolean published) {
-        this.published = published;
-    }
-
-    public boolean isRedeemed() {
-        return redeemed;
-    }
-
-    public void setRedeemed(boolean redeemed) {
-        this.redeemed = redeemed;
     }
 
     public static class Builder {

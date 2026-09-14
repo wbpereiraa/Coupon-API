@@ -1,11 +1,9 @@
 package com.challenge.coupon.config;
 
-import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,12 +18,6 @@ public class OpenApiConfig {
                         .version("1.0.0")
                         .description("API REST para gerenciamento e ciclo de vida de cupons promocionais.")
                         .contact(new Contact().name("Tech Team").email("tech@challenge.com"))
-                        .license(new License().name("Apache 2.0").url("https://spring.io")))
-                .components(new Components()
-                        .addSecuritySchemes("basicAuth",
-                                new SecurityScheme()
-                                        .type(SecurityScheme.Type.HTTP)
-                                        .scheme("basic")
-                                        .description("Autenticação HTTP Basic (usuário padrão: admin / admin123)")));
+                        .license(new License().name("Apache 2.0").url("https://spring.io")));
     }
 }

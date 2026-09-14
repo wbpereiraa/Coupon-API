@@ -16,21 +16,20 @@ O projeto construído para entregar **alto rigor técnico** com simplicidade e f
    - `dto/request` e `dto/response`: DTOs dedicados com validação declarativa (`Jakarta Validation`).
    - `mapper`: Componente coeso (`CouponMapper`) para conversão explícita entre DTOs e entidade.
    - `exception`: Hierarquia de exceções de negócio e `GlobalExceptionHandler` padronizado.
-   - `config`: Configurações centralizadas de Segurança (HTTP Basic) e Swagger.
+   - `config`: Configurações centralizadas do Swagger e do fuso horário de apresentação.
 
 2. **Persistência Confiável**:
    - Banco em memória **H2** (`jdbc:h2:mem:coupondb`).
    - Versionamento de banco com **Flyway** (`V1__create_coupon_table.sql`).
    - Validação de schema ativo via `spring.jpa.hibernate.ddl-auto=validate` (sem `update` em runtime).
 
-3. **Segurança (Spring Security)**:
-   - Autenticação **HTTP Basic** protegendo os endpoints `/coupon/**`.
-   - Acesso público liberado ao **Swagger UI** e documentação da API (`/v3/api-docs/**`, `/swagger-ui/**`).
+3. **Acesso à API**:
+   - Os endpoints são públicos e não exigem autenticação.
 
 4. **Qualidade & Testes**:
    - Testes unitários da entidade rica cobrindo mais de 90% das regras e casos de borda.
    - Testes unitários da camada de serviço com Mockito.
-   - Testes de integração da camada web (`@WebMvcTest`) cobrindo cenários com sucesso, validação e autenticação.
+   - Testes de integração da camada web (`@WebMvcTest`) cobrindo cenários de sucesso e validação.
    - Cobertura validada via **JaCoCo** (`mvn verify`).
 
 5. **Containerização**:
@@ -99,13 +98,6 @@ O relatório interativo de cobertura estará disponível em:
 
 ---
 
-## 🔐 Autenticação & Credenciais
-
-Os endpoints de negócio exigem autenticação **HTTP Basic**:
-
-- **Usuário padrão**: `admin`
-- **Senha padrão**: `admin123`
-
 ---
 
 ## 📖 Documentação da API (Swagger / OpenAPI)
@@ -115,8 +107,6 @@ Com a aplicação rodando, acesse a documentação interativa:
 - **Swagger UI**: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 - **OpenAPI JSON**: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
 
-> **Dica**: No Swagger UI, clique no botão **Authorize** e insira as credenciais `admin` / `admin123` para testar os endpoints diretamente pela interface.
-
 ---
 
 ## 📡 Exemplos de Chamadas via cURL
@@ -124,7 +114,6 @@ Com a aplicação rodando, acesse a documentação interativa:
 ### 1. Criar Cupom (`POST /coupon`)
 ```bash
 curl -X POST http://localhost:8080/coupon \
-  -u admin:admin123 \
   -H "Content-Type: application/json" \
   -d '{
     "code": "ABC-123",
@@ -151,20 +140,20 @@ curl -X POST http://localhost:8080/coupon \
 ### 2. Consultar Cupom por ID (`GET /coupon/{id}`)
 ```bash
 curl -X GET http://localhost:8080/coupon/cef9d1e3-aae5-4ab6-a297-358c6032b1e7 \
-  -u admin:admin123
+  
 ```
 
 ### 3. Deletar Cupom (`DELETE /coupon/{id}`)
 ```bash
 curl -X DELETE http://localhost:8080/coupon/cef9d1e3-aae5-4ab6-a297-358c6032b1e7 \
-  -u admin:admin123
+  
 ```
 **Resposta**: `204 No Content`
 
 ### 4. Tentar Deletar Cupom Já Deletado (Retorna 400 Bad Request)
 ```bash
 curl -X DELETE http://localhost:8080/coupon/cef9d1e3-aae5-4ab6-a297-358c6032b1e7 \
-  -u admin:admin123
+  
 ```
 **Resposta (400 Bad Request)**:
 ```json
