@@ -2,12 +2,16 @@ package com.challenge.coupon.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.Instant;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Estrutura padrão de resposta para erros")
+@Getter
+@Setter
 public class ErrorResponse {
 
     @Schema(description = "Momento em que o erro ocorreu", example = "2026-09-12T01:00:00.000Z")
@@ -42,54 +46,6 @@ public class ErrorResponse {
 
     public static Builder builder() {
         return new Builder();
-    }
-
-    public Instant getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Instant timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public List<String> getFieldErrors() {
-        return fieldErrors;
-    }
-
-    public void setFieldErrors(List<String> fieldErrors) {
-        this.fieldErrors = fieldErrors;
     }
 
     public static class Builder {
