@@ -71,8 +71,9 @@ A aplicação iniciará na porta **8080**.
 Os timestamps são persistidos como instantes UTC. A API os exibe no fuso
 `America/Sao_Paulo`, e o H2 Console usa o mesmo fuso apenas para apresentação.
 
-O H2 Console está disponível em [http://localhost:8080/h2-console](http://localhost:8080/h2-console).
+H2 Console está disponível em [http://localhost:8080/h2-console](http://localhost:8080/h2-console).
 Para conectar, use `jdbc:h2:mem:coupondb`, usuário `sa` e senha em branco.
+
 ---
 
 ### 2. Executando com Docker Compose
