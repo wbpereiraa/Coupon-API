@@ -6,14 +6,19 @@ spring:
     name: coupon-api
 
   datasource:
-    url: jdbc:h2:mem:coupondb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:coupondb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;INIT=SET TIME ZONE 'America/Sao_Paulo'
     driver-class-name: org.h2.Driver
     username: sa
     password:
 
   h2:
     console:
-      enabled: false
+      enabled: true
+
+  jackson:
+    time-zone: America/Sao_Paulo
+    serialization:
+      write-dates-as-timestamps: false
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
