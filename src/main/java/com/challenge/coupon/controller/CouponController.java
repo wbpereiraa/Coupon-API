@@ -65,7 +65,7 @@ public class CouponController {
             @ApiResponse(responseCode = "401", description = "Não autorizado")
     })
     public ResponseEntity<CouponResponse> getById(
-            @Parameter(description = "Identificador único do cupom (UUID)", example = "cef9d1e3-aae5-4ab6-a297-358c6032b1e7")
+            @Parameter(description = "Identificador único do cupom (UUID)", example = "UUID para consulta")
             @PathVariable UUID id) {
         CouponResponse response = couponService.getById(id);
         return ResponseEntity.ok(response);
@@ -83,7 +83,7 @@ public class CouponController {
             @ApiResponse(responseCode = "401", description = "Não autorizado")
     })
     public ResponseEntity<Void> delete(
-            @Parameter(description = "Identificador único do cupom (UUID)", example = "cef9d1e3-aae5-4ab6-a297-358c6032b1e7")
+            @Parameter(description = "Identificador único do cupom (UUID)", example = "UUID para deletar")
             @PathVariable UUID id) {
         couponService.delete(id);
         return ResponseEntity.noContent().build();
