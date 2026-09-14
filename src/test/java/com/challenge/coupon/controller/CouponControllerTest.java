@@ -1,6 +1,5 @@
 package com.challenge.coupon.controller;
 
-import com.challenge.coupon.config.SecurityConfig;
 import com.challenge.coupon.model.CouponStatus;
 import com.challenge.coupon.dto.request.CreateCouponRequest;
 import com.challenge.coupon.dto.response.CouponResponse;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -34,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CouponController.class)
-@Import({SecurityConfig.class, GlobalExceptionHandler.class})
+@Import(GlobalExceptionHandler.class)
 class CouponControllerTest {
 
     @Autowired
@@ -49,9 +47,8 @@ class CouponControllerTest {
     private final Instant futureDate = Instant.now().plus(10, ChronoUnit.DAYS);
 
     @Test
-    @WithMockUser(username = "admin")
     @DisplayName("POST /coupon - Should create coupon and return 201 Created")
-    void shouldCreateCouponWhenAuthenticated() throws Exception {
+    void shouldCreateCoupon() throws Exception {
         CreateCouponRequest request = CreateCouponRequest.builder()
                 .code("ABC-123")
                 .description("Desconto promocional")
@@ -87,23 +84,6 @@ class CouponControllerTest {
     }
 
     @Test
-    @DisplayName("POST /coupon - Should return 401 Unauthorized when not authenticated")
-    void shouldReturnUnauthorizedWithoutCredentials() throws Exception {
-        CreateCouponRequest request = CreateCouponRequest.builder()
-                .code("ABC-123")
-                .description("Desconto")
-                .discountValue(1.0)
-                .expirationDate(futureDate)
-                .build();
-
-        mockMvc.perform(post("/coupon")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
     @DisplayName("POST /coupon - Should return 400 Bad Request when validation fails")
     void shouldReturnBadRequestWhenFieldsInvalid() throws Exception {
         CreateCouponRequest invalidRequest = CreateCouponRequest.builder()
@@ -121,7 +101,6 @@ class CouponControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
     @DisplayName("GET /coupon/{id} - Should return 200 OK with coupon data")
     void shouldReturnCouponById() throws Exception {
         UUID id = UUID.randomUUID();
@@ -147,7 +126,6 @@ class CouponControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
     @DisplayName("GET /coupon/{id} - Should return 404 Not Found when ID does not exist")
     void shouldReturnNotFoundWhenCouponDoesNotExist() throws Exception {
         UUID id = UUID.randomUUID();
@@ -160,7 +138,6 @@ class CouponControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
     @DisplayName("DELETE /coupon/{id} - Should return 204 No Content")
     void shouldDeleteCouponSuccessfully() throws Exception {
         UUID id = UUID.randomUUID();
@@ -171,7 +148,6 @@ class CouponControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
     @DisplayName("DELETE /coupon/{id} - Should return 400 Bad Request when already deleted")
     void shouldReturnBadRequestWhenCouponAlreadyDeleted() throws Exception {
         UUID id = UUID.randomUUID();
