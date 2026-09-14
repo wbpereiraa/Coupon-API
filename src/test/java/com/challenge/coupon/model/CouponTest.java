@@ -184,5 +184,61 @@ class CouponTest {
                 .hasMessageContaining(coupon.getId().toString())
                 .hasMessageContaining("has already been deleted");
     }
-}
 
+    @Test
+    @DisplayName("Should expose the no-arg constructor and mutable entity properties")
+    void shouldSupportEntityConstructionAndPropertyUpdates() {
+        Coupon coupon = new Coupon();
+        UUID id = UUID.randomUUID();
+        Instant expiration = fixedNow.plus(60, ChronoUnit.DAYS);
+        Instant created = fixedNow.minus(1, ChronoUnit.DAYS);
+        Instant updated = fixedNow.plus(1, ChronoUnit.HOURS);
+        Instant deleted = fixedNow.plus(2, ChronoUnit.HOURS);
+
+        coupon.setId(id);
+        coupon.setCode("ABC123");
+        coupon.setDescription("Atualizado");
+        coupon.setDiscountValue(2.0);
+        coupon.setExpirationDate(expiration);
+        coupon.setStatus(CouponStatus.ACTIVE);
+        coupon.setPublished(true);
+        coupon.setRedeemed(true);
+        coupon.setCreatedAt(created);
+        coupon.setUpdatedAt(updated);
+        coupon.setDeletedAt(deleted);
+
+        assertThat(coupon.getId()).isEqualTo(id);
+        assertThat(coupon.getCode()).isEqualTo("ABC123");
+        assertThat(coupon.getDescription()).isEqualTo("Atualizado");
+        assertThat(coupon.getDiscountValue()).isEqualTo(2.0);
+        assertThat(coupon.getExpirationDate()).isEqualTo(expiration);
+        assertThat(coupon.getStatus()).isEqualTo(CouponStatus.ACTIVE);
+        assertThat(coupon.isPublished()).isTrue();
+        assertThat(coupon.isRedeemed()).isTrue();
+        assertThat(coupon.getCreatedAt()).isEqualTo(created);
+        assertThat(coupon.getUpdatedAt()).isEqualTo(updated);
+        assertThat(coupon.getDeletedAt()).isEqualTo(deleted);
+        assertThat(coupon.isDeleted()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Should create and delete a coupon using default current time")
+    void shouldUseCurrentTimeWhenTimeIsNotProvided() {
+        Coupon coupon = Coupon.create(
+                "ABC123",
+                "Cupom com horário padrão",
+                1.0,
+                Instant.now().plus(1, ChronoUnit.DAYS),
+                null
+        );
+
+        assertThat(coupon.getCreatedAt()).isNotNull();
+        assertThat(coupon.getUpdatedAt()).isEqualTo(coupon.getCreatedAt());
+        assertThat(coupon.isPublished()).isFalse();
+
+        coupon.delete();
+
+        assertThat(coupon.getDeletedAt()).isNotNull();
+        assertThat(coupon.getUpdatedAt()).isEqualTo(coupon.getDeletedAt());
+    }
+}
